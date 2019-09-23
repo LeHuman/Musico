@@ -1,0 +1,69 @@
+# Example as to how a new song is formatted
+# Name of file is song name
+# Any line beginning with a '#' is ignored
+
+# New track (NOTE: duplicate attributes will get overwritten)
+[Track]
+    # "file" : relative directory of track file | Eg: "Accordian.wav"
+    # file: [Accordian.wav, chain.wav, ...] | alternatively, chaining file names stiches files together
+    file: Accordian.wav
+    # "id" : number of track | (1, 16) (NOTE: tracks with same id will be overwritten)
+    id: 1
+    # "volume" or "vol" : max volume for song | (0.0, 1.0)
+    vol: 1
+    # "attack" or "atk" : how many active loops it takes to reach full vol | (1, n)
+    atk: 1
+    # "attackMultiplier" or "atkMult" : multiply current attack to volume | (true\false)
+    atkMult: true
+    # "attackFade" or "atkFd" : interpolation of the attackMultiplier | (true\false)
+    atkFd: true
+    # "sustain" or "sus" : how many unactive loops it takes to completely decay | (1, n)
+    sus: 1
+    # "sustainMultiplier" or "susMult" : multiply current sustain to volume | (true\false)
+    susMult: true
+    # "sustainFade" or "susFd" : interpolation of the sustainMultiplier | (true\false)
+    atkFd: true
+    # "threshold" or "tHold" : the range(s) in which the track should play | ([{-100,100},...])
+    tHold: [
+        {20,100},
+        {-50,-30}
+    ]
+    tHold: [20,100]
+
+[Track]
+    file: HangDrum.wav
+    id: 2
+    vol: 1
+    atk: 0
+    atkMult: true
+    atkFd: true
+    sus: 0
+    susMult: true
+    susFd: true
+    tHold: [-85,100]
+
+[Track]
+    file: PanPipe.wav
+    id: 3
+    vol: 1
+    atk: 0
+    atkMult: true
+    sus: 0
+    susMult: true
+
+[Track]
+    file: Piano.wav
+    id: 4
+    vol: 1
+    atk: 0
+    atkMult: true
+    sus: 0
+    susMult: true
+    tHold: [-45,90]
+
+#Actual info about the song
+[Song]
+    # beats per minute (default: 60)
+    bpm: 174
+    # beats per loop (default: 4)
+    bpl: 12
