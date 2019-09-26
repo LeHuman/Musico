@@ -5,12 +5,15 @@ local function startTrack(self)
     source.setLooping(source, true)
     source.play(source)
 end
+
 local function stopTrack(self)
     self.source:setLooping(false)
 end
+
 local function pauseTrack(self)
     self.source:pause()
 end
+
 local function unpauseTrack(self)
     self.source:play()
 end
@@ -33,7 +36,7 @@ local track = {
     stop = stopTrack,
     pause = pauseTrack,
     unpause = unpauseTrack,
-    getID = getID,
+    getID = getID
 }
 
 local function newTrack(trackTable)
@@ -49,12 +52,17 @@ end
 local song = {
     name = 'nil',
     bpm = 60,
-    bpl = 4,
+    bpl = 4
 }
 
 function song.addTrack(self, trackTable)
     trackTable = newTrack(trackTable)
-    self.tracks[trackTable.id] = trackTable
+    local id = trackTable.id
+    if id < 16 and id > 0 then
+        self.tracks[id] = trackTable
+    else
+        print('Track id is out of range: ', id)
+    end
 end
 
 function song.getTracks(self)
@@ -68,33 +76,35 @@ end
 function song.getBPL(self)
     return self.bpl
 end
+
 function song.getName(self)
     return self.name
 end
 
-local function returnThresholds(self)
-    return self.thresholds
-end
+-- local function returnThresholds(self)
+--     return self.thresholds
+-- end
 
-local function setThresh(lr, up, id, tbl)
-    lr = floor(lr - 1)
-    up = floor(up + 1)
-    if not tbl[lr] then
-        tbl[lr] = {}
-    end
-    if not tbl[up] then
-        tbl[up] = {}
-    end
-    insert(tbl[lr], id)
-    insert(tbl[up], id)
-end
+-- local function setThresh(lr, up, id, tbl)
+--     lr = floor(lr - 1)
+--     up = floor(up + 1)
+--     if not tbl[lr] then
+--         tbl[lr] = {}
+--     end
+--     if not tbl[up] then
+--         tbl[up] = {}
+--     end
+--     insert(tbl[lr], id)
+--     insert(tbl[up], id)
+-- end
 
 function song.getThresholds(self)
     local tracks = self.tracks
     local tHolds = {}
-    for _, trk in pairs(tracks) do
+
+    for i = 1, #tracks do
+        local trk = tracks[i]
         local tHold = trk.tHold
-        local id = self.id
         if type(tHold[1]) == 'table' then
             for j = 1, #tHold do
                 setThresh(tHold[j][1], tHold[j][2], id, tHolds)
@@ -103,13 +113,54 @@ function song.getThresholds(self)
             setThresh(tHold[1], tHold[2], trk:getID(), tHolds)
         end
     end
-    self.thresholds = tHolds
-    self.getThresholds = returnThresholds
-    return tHolds
+    -- for _, trk in pairs(tracks) do
+    --     local tHold = trk.tHold
+    --     local id = self.id
+    --     if type(tHold[1]) == 'table' then
+    --         for j = 1, #tHold do
+    --             setThresh(tHold[j][1], tHold[j][2], id, tHolds)
+    --         end
+    --     else
+    --         setThresh(tHold[1], tHold[2], trk:getID(), tHolds)
+    --     end
+    -- end
+    -- self.thresholds = tHolds
+    -- self.getThresholds = returnThresholds
+    -- return tHolds
+end
+
+--TODO: benchmark table instantiation
+-- local TRACKLIMIT = 16
+-- local function newTrackTable()
+--     local o = {}
+--     for i = 1, TRACKLIMIT do
+--         insert(o, true)
+--     end
+-- end
+
+local function newTrackTable()
+    return {
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false
+    }
 end
 
 local function newSong(songTable)
-    songTable.tracks = {}
+    songTable.tracks = newTrackTable()
     setmetatable(songTable, {__index = song})
     for k, v in pairs(song) do
         if not songTable[k] or type(songTable[k]) ~= type(v) then
