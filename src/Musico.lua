@@ -48,7 +48,7 @@ local function load(musicFolder)
         bpl = 12
     }
     o:addTrack {
-        source = newSource('Music/Shanty/shantibies.mid', 'static'),
+        source = newSource('Music/Shanty/Accordian.wav', 'static'),
         id = 1,
         vol = 1,
         atk = 0,

@@ -30,5 +30,7 @@ function love.update(dt)
 end
 
 function love.draw()
+    print(bit.tohex((math.floor(Musico.getIntensity() * 100))))
+    print(bit.tobit((math.floor(Musico.getIntensity() * 100))))
     love.graphics.print(math.floor(Musico.getIntensity() * 100), 10, 10)
 end
