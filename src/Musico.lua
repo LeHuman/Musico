@@ -4,7 +4,7 @@
     into tracks in order to create horizontal dynamic
     music
 ]]
-local insert, filesystem, read, floor = table.insert, love.filesystem, love.filesystem.read, math.floor
+local filesystem, read, floor = love.filesystem, love.filesystem.read, math.floor
 local newSoundData = love.sound.newSoundData --IMPROVE: if memory becomes issue, implement decoder
 local newSource = love.audio.newSource
 
@@ -20,6 +20,10 @@ local function loadSongFile(songPath) --TODO: make .musico reader
     -- for line in  do
     --     table.insert(highscores, line)
     -- end
+    return {
+        song = {},
+        tracks = {}
+    }
 end
 
 local function loadFiles(songDir)
@@ -121,40 +125,6 @@ local function updateTracks()
                 print('killing:' .. trk.id)
             end
         end
-    end
-end
-
-local function _tabletostring(tt, indent, done)
-    done = done or {}
-    indent = indent or 1
-    if type(tt) == 'table' then
-        local sb = {}
-        for key, value in pairs(tt) do
-            table.insert(sb, string.rep('\t', indent)) -- indent it
-            local keystring = key
-            if type(key) == 'number' then
-                keystring = string.format('[%d]', key)
-            end
-            if type(key) == 'string' then
-                keystring = string.format('["%s"]', key)
-            end
-            if type(value) == 'table' and not done[value] then
-                done[value] = true
-                table.insert(sb, string.format('%s={\n', keystring))
-                table.insert(sb, _tabletostring(value, indent + 1, done))
-                table.insert(sb, string.rep('\t', indent)) -- indent it
-                table.insert(sb, '},\n')
-            elseif type(value) == 'string' then
-                table.insert(sb, string.format('%s ="%s",\n', keystring, value))
-            else
-                table.insert(sb, string.format('%s = %s,\n', keystring, tostring(value)))
-            end
-        end
-        return table.concat(sb)
-    elseif tt then
-        return tt .. '\n'
-    else
-        return 'nil' .. '\n'
     end
 end
 
