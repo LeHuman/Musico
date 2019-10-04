@@ -24,11 +24,11 @@
     # "sustainFade" or "susFd" : interpolation of the sustainMultiplier | (true\false)
     atkFd: true
     # "threshold" or "tHold" : the range(s) in which the track should play | ([{-100,100},...])
-    tHold: [
+    tHold: {
         {20,100},
         {-50,-30}
-    ]
-    tHold: [20,100]
+    }
+    tHold: {20,100}
 
 [Track]
     file: HangDrum.wav

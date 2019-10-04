@@ -15,6 +15,10 @@ local activeTracks, thresholds, loopTime, playing
 local loop = 0
 local intensity = 0
 
+local function findHeader(str)
+    string.format('formatstring', ...)
+end
+
 local function loadSongFile(songPath) --TODO: make .musico reader
     -- local songFile = read(songPath)
     -- for line in  do

@@ -85,17 +85,42 @@ function song.getThresholds(self)
     return self.thresholds
 end
 
-local function setThresh(lr, up, id, tbl)
-    lr = floor(lr - 1)
-    up = floor(up + 1)
-    if not tbl[lr] then
-        tbl[lr] = {}
+local thresholdObj = {}
+thresholdObj.__index = thresholdObj
+function thresholdObj.new()
+    local o = {
+        holds = {}
+    }
+    setmetatable(o, thresholdObj)
+    return o
+end
+local function multiHold(self, num)
+    local holds = self.holds
+    for i = 1, #holds do
+        local hold = holds[i]
+        if hold[1] <= num and num <= hold[2] then
+            return true
+        end
     end
-    if not tbl[up] then
-        tbl[up] = {}
+    return false
+end
+local function singleHold(self, num)
+    local hold = self.holds[1]
+    if hold[1] <= num and num <= hold[2] then
+        return true
     end
-    insert(tbl[lr], id)
-    insert(tbl[up], id)
+    return false
+end
+function thresholdObj:newBound(upper, lower)
+    self.holds[#self.holds + 1] = {upper, lower}
+    if #self.holds == 1 then
+        self.check = singleHold
+    else
+        self.check = multiHold
+    end
+end
+function thresholdObj.check()
+    return false
 end
 
 local function setThresholds(songTable)
@@ -105,12 +130,13 @@ local function setThresholds(songTable)
     for i = 1, #tracks do
         local trk = tracks[i]
         local tHold = trk.tHold
+        tHolds[i] = thresholdObj.new()
         if type(tHold[1]) == 'table' then
             for j = 1, #tHold do
-                setThresh(tHold[j][1], tHold[j][2], i, tHolds)
+                tHolds[i]:newBound(tHold[j][1], tHold[j][2])
             end
         else
-            setThresh(tHold[1], tHold[2], trk:getID(), tHolds)
+            tHolds[i]:newBound(tHold[1], tHold[2])
         end
     end
     songTable.tHolds = tHolds

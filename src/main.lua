@@ -1,5 +1,7 @@
 --Love2D Test of Musico
 local Musico = require('Musico')
+local w = 0
+
 function love.keypressed(key)
 end
 
@@ -15,7 +17,7 @@ function love.mousereleased(_, _, button)
         Musico.start()
     end
 end
-local w = 0
+
 function love.mousemoved(x)
     Musico.setIntensity((x / w) - 1)
 end
