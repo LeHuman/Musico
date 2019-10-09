@@ -11,12 +11,14 @@
     id: 1
     # "volume" or "vol" : max volume for song | (0.0, 1.0)
     vol: 1
-    # "attack" or "atk" : how many active loops it takes to reach full vol | (1, n)
+    # "attack" or "atk" : how much is added to sus val each active loop | (1, n) (NOTE: 0 will immediatly turn on full sus)
     atk: 1
-    # "attackMultiplier" or "atkMult" : multiply current attack to volume | (true\false)
-    atkMult: true
-    # "attackFade" or "atkFd" : interpolation of the attackMultiplier | (true\false)
-    atkFd: true
+    # "release" or "rls" : how much is removed from sus val each inactive loop | (1, n) (NOTE: 0 will immediatly turn off all sus)
+    rls: 1
+    # "Multiplier" or "mult" : multiply current attack/release to volume | (true\false)
+    mult: true
+    # "Interpolation" or "inter" : interpolation of the attack/release Multiplier/ | (true\false)
+    inter: true
     # "sustain" or "sus" : how many unactive loops it takes to completely decay | (1, n)
     sus: 1
     # "sustainMultiplier" or "susMult" : multiply current sustain to volume | (true\false)

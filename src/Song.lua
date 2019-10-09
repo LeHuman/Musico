@@ -1,62 +1,12 @@
-local insert, floor = table.insert, math.floor
+local track = require('Track')
+local pauseT, unPauseT, stopT, startT = track.pause, track.unPause, track.stop, track.start
+local updateTrack = track.update
 
-local function startTrack(self)
-    local source = self.source
-    source.setLooping(source, true)
-    source.play(source)
-end
-
-local function stopTrack(self)
-    self.source:setLooping(false)
-end
-
-local function pauseTrack(self)
-    self.source:pause()
-end
-
-local function unpauseTrack(self)
-    self.source:play()
-end
-
-local function getID(self)
-    return self.id
-end
-
-local track = {
-    id = 0,
-    vol = 1,
-    atk = 0,
-    atkMult = true,
-    atkFd = true,
-    sus = 0,
-    susMult = true,
-    susFd = true,
-    tHold = {-85, 100},
-    start = startTrack,
-    stop = stopTrack,
-    pause = pauseTrack,
-    unpause = unpauseTrack,
-    getID = getID
-}
-
-local function newTrack(trackTable)
-    setmetatable(trackTable, {__index = track})
-    for k, v in pairs(track) do
-        if not trackTable[k] or type(trackTable[k]) ~= type(v) then
-            trackTable[k] = v
-        end
+local function addTrack(self, trackTable)
+    if not self.tracks then
+        self.tracks = {}
     end
-    return trackTable
-end
-
-local song = {
-    name = 'nil',
-    bpm = 60,
-    bpl = 4
-}
-
-function song.addTrack(self, trackTable)
-    trackTable = newTrack(trackTable)
+    trackTable = track.new(trackTable)
     local id = trackTable.id
     if id < 16 and id > 0 then
         self.tracks[id] = trackTable
@@ -65,90 +15,92 @@ function song.addTrack(self, trackTable)
     end
 end
 
-function song.getTracks(self)
+local function getTracks(self)
     return self.tracks
 end
 
-function song.getBPM(self)
+local function getBPM(self)
     return self.bpm
 end
 
-function song.getBPL(self)
+local function getBPL(self)
     return self.bpl
 end
 
-function song.getName(self)
+local function getName(self)
     return self.name
 end
 
-function song.getThresholds(self)
-    return self.thresholds
+local function pause(self)
+    local trks = self.tracks
+    for i = 1, #trks do
+        pauseT(trks[i])
+    end
+    self.playing = false
 end
 
-local thresholdObj = {}
-thresholdObj.__index = thresholdObj
-function thresholdObj.new()
-    local o = {
-        holds = {}
-    }
-    setmetatable(o, thresholdObj)
-    return o
-end
-local function multiHold(self, num)
-    local holds = self.holds
-    for i = 1, #holds do
-        local hold = holds[i]
-        if hold[1] <= num and num <= hold[2] then
-            return true
-        end
+local function unpause(self)
+    local trks = self.tracks
+    for i = 1, #trks do
+        unPauseT(trks[i])
     end
-    return false
-end
-local function singleHold(self, num)
-    local hold = self.holds[1]
-    if hold[1] <= num and num <= hold[2] then
-        return true
-    end
-    return false
-end
-function thresholdObj:newBound(upper, lower)
-    self.holds[#self.holds + 1] = {upper, lower}
-    if #self.holds == 1 then
-        self.check = singleHold
-    else
-        self.check = multiHold
-    end
-end
-function thresholdObj.check()
-    return false
+    self.playing = true
 end
 
-local function setThresholds(songTable)
-    local tracks = songTable.tracks
-    local tHolds = {}
-
-    for i = 1, #tracks do
-        local trk = tracks[i]
-        local tHold = trk.tHold
-        tHolds[i] = thresholdObj.new()
-        if type(tHold[1]) == 'table' then
-            for j = 1, #tHold do
-                tHolds[i]:newBound(tHold[j][1], tHold[j][2])
-            end
-        else
-            tHolds[i]:newBound(tHold[1], tHold[2])
-        end
+local function stop(self)
+    local trks = self.tracks
+    for i = 1, #trks do
+        stopT(trks[i])
     end
-    songTable.tHolds = tHolds
+    self.playing = false
 end
+
+local function start(self)
+    local trks = self.tracks
+    for i = 1, #trks do
+        startT(trks[i])
+    end
+    self.playing = true
+end
+
+local function update(self, intensity)
+    local trks = self.tracks
+    for i = 1, #trks do
+        updateTrack(trks[i], intensity)
+    end
+end
+
+local song = {
+    name = 'nil',
+    bpm = 60,
+    bpl = 4,
+    playing = false,
+    addTrack = addTrack,
+    getTracks = getTracks,
+    getBPM = getBPM,
+    getBPL = getBPL,
+    getName = getName,
+    pause = pause,
+    unpause = unpause,
+    stop = stop,
+    start = start
+}
 
 local function newSong(songTable)
-    setmetatable(songTable.song, {__index = song})
-    for _, trk in ipairs(songTable.tracks) do
-        setmetatable(trk, {__index = track})
-    end
-    setThresholds(songTable)
+    setmetatable(songTable, {__index = song})
     return songTable
 end
 
-return newSong
+return {
+    new = newSong,
+    update = update,
+    addTrack = addTrack,
+    getTracks = getTracks,
+    getBPM = getBPM,
+    getBPL = getBPL,
+    getName = getName,
+    pause = pause,
+    unpause = unpause,
+    stop = stop,
+    start = start
+}

@@ -8,15 +8,18 @@ local filesystem, read, floor = love.filesystem, love.filesystem.read, math.floo
 local newSoundData = love.sound.newSoundData --IMPROVE: if memory becomes issue, implement decoder
 local newSource = love.audio.newSource
 
-local newSong = require('Song')
+local songL = require('Song')
+local pauseS, unPauseS, stopS, startS = songL.pause, songL.unPause, songL.stop, songL.start
+local newSong, updateSong = songL.new, songL.update
 local songs = {}
 
-local activeTracks, thresholds, loopTime, playing
+local loopTime, playing
+local activeSong
 local loop = 0
 local intensity = 0
 
 local function findHeader(str)
-    string.format('formatstring', ...)
+    -- string.format(str, ...)
 end
 
 local function loadSongFile(songPath) --TODO: make .musico reader
@@ -59,13 +62,14 @@ local function load(musicFolder)
         source = newSource('Music/Shanty/Accordian.wav', 'static'),
         id = 1,
         vol = 1,
-        atk = 0,
-        atkMult = true,
-        atkFd = true,
+        atk = 0.2,
+        rls = 0.2,
+        mult = true,
+        inter = true,
         sus = 0,
         susMult = true,
         susFd = true,
-        tHold = {-85, 100}
+        tHolds = {{-55, 100}}
     }
     songs['shanty'] = o
 end
@@ -73,41 +77,32 @@ end
 local function loadSong(songName)
     local song = songs[songName]
     if song then
-        activeTracks = song:getTracks()
-        thresholds = song:getThresholds()
-        loopTime = song:getBPL() / (song:getBPM() * 60)
+        if activeSong then
+            stopS(activeSong)
+        end
+        activeSong = song
+        loopTime = song:getBPL() / (song:getBPM()/30) --FIXME: bpm and stuff
         print('song loaded!')
     end
 end
 
 local function pause()
-    for _, trak in pairs(activeTracks) do
-        trak:pause()
-    end
+    pauseS(activeSong)
     playing = false
 end
 
 local function unpause()
-    for _, trak in pairs(activeTracks) do
-        trak:unpause()
-    end
+    unPauseS(activeSong)
     playing = true
 end
 
 local function stop()
-    for _, trak in pairs(activeTracks) do
-        trak:stop()
-    end
+    stopS(activeSong)
     playing = false
 end
 
 local function start()
-    if activeTracks then
-        stop()
-    end
-    for _, trak in pairs(activeTracks) do
-        trak:start()
-    end
+    startS(activeSong)
     playing = true
 end
 
@@ -119,27 +114,14 @@ local function getIntensity()
     return intensity
 end
 
-local function updateTracks()
-    local tHolds = thresholds[floor(intensity * 100)]
-    if tHolds then
-        for i = 1, #tHolds do
-            local trk = activeTracks[tHolds[i]]
-            if trk then
-                trk:stop()
-                print('killing:' .. trk.id)
-            end
-        end
-    end
-end
-
 local function update(dt)
     if playing then
         loop = loop + dt
         if loop >= loopTime then
+            print('loop')
             loop = 0
-            updateTracks()
+            updateSong(activeSong, intensity)
         end
-    -- print(_tabletostring(thresholds))
     end
 end
 
