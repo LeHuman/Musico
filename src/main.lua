@@ -13,8 +13,11 @@ function love.mousereleased(_, _, button)
     if not played then
         print('play!')
         played = true
-        Musico.loadSong('shanty')
         Musico.start()
+    else
+        print('stop!')
+        played = false
+        Musico.stop()
     end
 end
 
@@ -24,6 +27,7 @@ end
 
 function love.load()
     Musico.load()
+    Musico.loadSong('rink')
     w = love.graphics.getDimensions() / 2
 end
 

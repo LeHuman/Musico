@@ -54,12 +54,12 @@ local function load(musicFolder)
     -- end
     local o =
         newSong {
-        name = 'shanty',
-        bpm = 174,
-        bpl = 12
+        name = 'rink',
+        bpm = 235,
+        bpl = 4
     }
     o:addTrack {
-        source = newSource('Music/Shanty/Accordian.wav', 'static'),
+        source = newSource('Music/rink/rink.wav', 'static'),
         id = 1,
         vol = 1,
         atk = 0.2,
@@ -71,7 +71,7 @@ local function load(musicFolder)
         susFd = true,
         tHolds = {{-55, 100}}
     }
-    songs['shanty'] = o
+    songs['rink'] = o
 end
 
 local function loadSong(songName)
@@ -81,7 +81,7 @@ local function loadSong(songName)
             stopS(activeSong)
         end
         activeSong = song
-        loopTime = song:getBPL() / (song:getBPM()/30) --FIXME: bpm and stuff
+        loopTime = song:getBPL()*4 / (song:getBPM() / 60) --FIXME: bpm and stuff
         print('song loaded!')
     end
 end
