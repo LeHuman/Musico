@@ -63,10 +63,10 @@ local function start(self)
     self.playing = true
 end
 
-local function update(self, intensity)
+local function update(self, intensity, cut)
     local trks = self.tracks
     for i = 1, #trks do
-        updateTrack(trks[i], intensity)
+        updateTrack(trks[i], intensity, cut)
     end
 end
 

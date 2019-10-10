@@ -116,12 +116,10 @@ end
 
 local function update(dt)
     if playing then
-        loop = loop + dt
-        if loop >= loopTime then
-            print('loop')
-            loop = 0
-            updateSong(activeSong, intensity)
-        end
+        local cut = loop >= loopTime
+        loop = cut and 0 or loop + dt
+        -- print(loop)
+        updateSong(activeSong, intensity, cut)
     end
 end
 

@@ -58,24 +58,23 @@ local function singleHold(self, intensity)
     return false
 end
 
--- local function newBound(self, upper, lower)
---     self.tHolds[#self.tHolds + 1] = {upper, lower}
---     if #self.tHolds == 1 then
---         self.check = singleHold
---     else
---         self.check = multiHold
---     end
--- end
-
-local function update(self, intensity)
-    if self:check(intensity) then
-        press(self)
-    else
-        release(self)
+local function update(self, intensity, cut)
+    if cut then
+        if self:check(intensity) then --IMPROVE: better threshold checking
+            press(self)
+        else
+            release(self)
+        end
     end
     local tmp = self.tmp
+
+    local s = -math.log(tmp - self.trgt + 1)
+    tmp = tmp + s
+    self.tmp = tmp
+
     if self.mult then
-        setVolume(self,tmp)
+        print(tmp)
+        setVolume(self, tmp)
     end
     -- if self.tmp == 0 then --add option to restart or continue off
     --     pauseTrack(self)
@@ -93,6 +92,7 @@ local track = {
     inter = true, --TODO:Interpolation of values
     sus = 0,
     tmp = 0,
+    trgt = 0,
     susMult = true,
     susFd = true,
     tHolds = {{0, 0}} -- tHolds should be formatted like this by Musico
@@ -124,7 +124,6 @@ return {
     pause = pauseTrack,
     unPause = unpauseTrack,
     getID = getID,
-    newBound = newBound,
     getTHolds = getTHolds,
     update = update
 }
