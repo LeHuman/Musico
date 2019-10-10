@@ -2,19 +2,6 @@ local track = require('Track')
 local pauseT, unPauseT, stopT, startT = track.pause, track.unPause, track.stop, track.start
 local updateTrack = track.update
 
-local function addTrack(self, trackTable)
-    if not self.tracks then
-        self.tracks = {}
-    end
-    trackTable = track.new(trackTable)
-    local id = trackTable.id
-    if id < 16 and id > 0 then
-        self.tracks[id] = trackTable
-    else
-        print('Track id is out of range: ', id)
-    end
-end
-
 local function getTracks(self)
     return self.tracks
 end
@@ -29,6 +16,23 @@ end
 
 local function getName(self)
     return self.name
+end
+
+local function getLoopTime(self)
+    return self.loopTime
+end
+
+local function addTrack(self, trackTable)
+    if not self.tracks then
+        self.tracks = {}
+    end
+    trackTable = track.new(trackTable, getLoopTime(self))
+    local id = trackTable.id
+    if id < 16 and id > 0 then
+        self.tracks[id] = trackTable
+    else
+        print('Track id is out of range: ', id)
+    end
 end
 
 local function pause(self)
@@ -88,6 +92,7 @@ local song = {
 
 local function newSong(songTable)
     setmetatable(songTable, {__index = song})
+    song.loopTime = getBPL(getBPL) * 4 / (getBPM(song) / 60) --FIXME: bpm and stuff
     return songTable
 end
 
@@ -96,6 +101,7 @@ return {
     update = update,
     addTrack = addTrack,
     getTracks = getTracks,
+    getLoopTime = getLoopTime,
     getBPM = getBPM,
     getBPL = getBPL,
     getName = getName,

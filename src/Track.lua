@@ -98,7 +98,7 @@ local track = {
     tHolds = {{0, 0}} -- tHolds should be formatted like this by Musico
 }
 
-local function newTrack(trackTable) --TODO:Ensure tHolds are formatted correctly
+local function newTrack(trackTable, loopTime) --TODO:Ensure tHolds are formatted correctly
     setmetatable(trackTable, {__index = track})
     for k, v in pairs(track) do
         if not trackTable[k] or type(trackTable[k]) ~= type(v) then
@@ -111,6 +111,7 @@ local function newTrack(trackTable) --TODO:Ensure tHolds are formatted correctly
     else
         trackTable.check = multiHold
     end
+    trackTable.loopTime = loopTime
     trackTable.sus = trackTable.sus == 0 and 1 or trackTable.sus
     trackTable.atk = trackTable.atk == 0 and trackTable.sus or trackTable.atk
     trackTable.rls = trackTable.rls == 0 and trackTable.sus or trackTable.rls

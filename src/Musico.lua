@@ -10,7 +10,7 @@ local newSource = love.audio.newSource
 
 local songL = require('Song')
 local pauseS, unPauseS, stopS, startS = songL.pause, songL.unPause, songL.stop, songL.start
-local newSong, updateSong = songL.new, songL.update
+local newSong, updateSong, getLoopTime = songL.new, songL.update, songL.getLoopTime
 local songs = {}
 
 local loopTime, playing
@@ -81,7 +81,7 @@ local function loadSong(songName)
             stopS(activeSong)
         end
         activeSong = song
-        loopTime = song:getBPL()*4 / (song:getBPM() / 60) --FIXME: bpm and stuff
+        loopTime = getLoopTime(song)
         print('song loaded!')
     end
 end
