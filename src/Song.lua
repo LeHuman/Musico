@@ -24,14 +24,30 @@ end
 
 local function addTrack(self, trackTable)
     if not self.tracks then
-        self.tracks = {}
+        self.tracks = {
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false
+        }
     end
-    trackTable = track.new(trackTable, getLoopTime(self))
+    trackTable = track.new(trackTable)
     local id = trackTable.id
     if id < 16 and id > 0 then
         self.tracks[id] = trackTable
     else
-        print('Track id is out of range: ', id)
+        print('Track id is out of range:', id)
     end
 end
 
@@ -67,10 +83,11 @@ local function start(self)
     self.playing = true
 end
 
-local function update(self, dt, intensity, cut)
+local function update(self, loop, intensity, cut)
     local trks = self.tracks
+    local loopTime = self.loopTime
     for i = 1, #trks do
-        updateTrack(trks[i], dt, intensity, cut)
+        updateTrack(trks[i], loop, loopTime, intensity, cut)
     end
 end
 

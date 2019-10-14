@@ -1,71 +1,91 @@
 # Example as to how a new song is formatted
 # Name of file is song name
 # Any line beginning with a '#' is ignored
+# letter case is ignored
 
-# New track (NOTE: duplicate attributes will get overwritten)
+# Interpolation Functions*
+#   exponential
+#   circular
+#   linear
+#   quadratic
+# more can be added in the Interpolation.lua
+
+# New track (NOTE = duplicate attributes will get overwritten)
 [Track]
-    # "file" : relative directory of track file | Eg: "Accordian.wav"
-    # file: [Accordian.wav, chain.wav, ...] | alternatively, chaining file names stiches files together
-    file: Accordian.wav
-    # "id" : number of track | (1, 16) (NOTE: tracks with same id will be overwritten)
-    id: 1
-    # "volume" or "vol" : max volume for song | (0.0, 1.0)
-    vol: 1
-    # "attack" or "atk" : how much is added to sus val each active loop | (1, n) (NOTE: 0 will immediatly turn on full sus)
-    atk: 1
-    # "release" or "rls" : how much is removed from sus val each inactive loop | (1, n) (NOTE: 0 will immediatly turn off all sus)
-    rls: 1
-    # "Multiplier" or "mult" : multiply current attack/release to volume | (true\false)
-    mult: true
-    # "Interpolation" or "inter" : interpolation of the attack/release Multiplier/ | (true\false)
-    inter: true
-    # "sustain" or "sus" : how many unactive loops it takes to completely decay | (1, n)
-    sus: 1
-    # "sustainMultiplier" or "susMult" : multiply current sustain to volume | (true\false)
-    susMult: true
-    # "sustainFade" or "susFd" : interpolation of the sustainMultiplier | (true\false)
-    atkFd: true
-    # "threshold" or "tHold" : the range(s) in which the track should play | ([{-100,100},...])
-    tHold: {
-        {20,100},
+    # 'file' = relative directory of track file | Eg = 'Accordian.wav'
+    # file = {Accordian.wav, chain.wav, ...} | alternatively, chaining file names stiches files together
+    file = Accordian.wav
+    # 'id' = number of track | (1, 16) (NOTE = tracks with same id will be overwritten)
+    id = 1
+    # 'volume' or 'vol' = max volume for song | (0.0, 1.0)
+    vol = 1
+    # 'attack' or 'atk' = how much is added to sus val each active loop | (1, n) (NOTE = 0 will immediatly turn on full sus)
+    atk = 1
+    # 'release' or 'rls' = how much is removed from sus val each inactive loop | (1, n) (NOTE = 0 will immediatly turn off all sus)
+    rls = 1
+    # 'multiplier' or 'mult' = multiply current attack/release to volume | (true\false)
+    mult = true
+    # 'interpolation' or 'inter' = interpolation of the attack/release Multiplier | ('false' or an interpolation function*)
+    inter = quadratic
+    # 'sustain' or 'sus' = how many unactive loops it takes to completely decay | (1, n)
+    sus = 1
+    # 'threshold' or 'tHold' = the range(s) in which the track should play | ({{lower,upper},{-100,100},...})
+    tHold = {
+        {20,100}
         {-50,-30}
     }
-    tHold: {20,100}
 
 [Track]
-    file: HangDrum.wav
-    id: 2
-    vol: 1
-    atk: 0
-    atkMult: true
-    atkFd: true
-    sus: 0
-    susMult: true
-    susFd: true
-    tHold: [-85,100]
+    file = Accordian.wav
+    id = 0
+    vol = 1
+    atk = 1
+    rls = 1
+    mult = true
+    inter = 'linear'
+    sus = 0
+    susMult = true
+    susFd = true
+    tHold = {
+        {0, 0}
+    }
 
 [Track]
-    file: PanPipe.wav
-    id: 3
-    vol: 1
-    atk: 0
-    atkMult: true
-    sus: 0
-    susMult: true
+    file = HangDrum.wav
+    id = 2
+    vol = 1
+    atk = 1
+    rls = 1
+    inter = 'linear'
+    mult = true
+    inter = true
+    sus = 0
+    susMult = true
+    susFd = true
+    tHold = {-85,100}
 
 [Track]
-    file: Piano.wav
-    id: 4
-    vol: 1
-    atk: 0
-    atkMult: true
-    sus: 0
-    susMult: true
-    tHold: [-45,90]
+    file = PanPipe.wav
+    id = 3
+    vol = 1
+    atk = 0
+    atkMult = true
+    sus = 0
+    susMult = true
+
+[Track]
+    file = Piano.wav
+    id = 4
+    vol = 1
+    atk = 0
+    atkMult = true
+    sus = 0
+    susMult = true
+    tHold = {-45,90}
 
 #Actual info about the song
 [Song]
-    # beats per minute (default: 60)
-    bpm: 174
-    # beats per loop (default: 4)
-    bpl: 12
+    # beats per minute (default = 60)
+    bpm = 174
+    # beats per loop (default = 4)
+    bpl = 12

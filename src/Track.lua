@@ -1,4 +1,15 @@
 local interFunc = require('Interpolation')
+local newSource = love.audio.newSource
+local max, min = math.max, math.min
+
+local function setVolume(self, vol)
+    self.source:setVolume(vol)
+end
+
+local function getVolume(self)
+    return self.source:getVolume()
+end
+
 local function startTrack(self)
     local source = self.source
     source.setLooping(source, true)
@@ -7,7 +18,8 @@ end
 
 local function stopTrack(self)
     self.source:setLooping(false)
-    self.tmp = 0
+    self.init = getVolume(self)
+    self.trgt = 0
 end
 
 local function pauseTrack(self)
@@ -18,14 +30,6 @@ local function unpauseTrack(self)
     self.source:play()
 end
 
-local function setVolume(self, vol)
-    self.source:setVolume(vol)
-end
-
-local function getVolume(self)
-    return self.source:getVolume()
-end
-
 local function getID(self)
     return self.id
 end
@@ -33,8 +37,6 @@ end
 local function getTHolds(self)
     return self.tHolds
 end
-
-local max, min = math.max, math.min
 
 local function press(self)
     self.trgt = min(self.trgt + self.atk, self.sus)
@@ -67,7 +69,7 @@ local function interpolate(time, initial, target, duration, func)
     return func(time, initial, target - initial, duration)
 end
 
-local function update(self, dt, intensity, cut)
+local function update(self, loop, loopTime, intensity, cut)
     if cut then
         if self:check(intensity) then --IMPROVE: better threshold checking
             press(self)
@@ -75,16 +77,11 @@ local function update(self, dt, intensity, cut)
             release(self)
         end
         self.init = getVolume(self)
-        self.time = 0
     end
 
     if self.mult then
         if self.inter then
-            self.time = self.time + dt
-            local mov = interpolate(self.time, self.init, self.trgt, self.loopTime, self.inter)
-            if mov > 0 and mov < 1 then
-                print(mov)
-            end
+            local mov = interpolate(loop, self.init, self.trgt, loopTime, self.inter)
             setVolume(self, mov)
         else
             setVolume(self, intensity)
@@ -95,16 +92,13 @@ end
 
 local track = {
     id = 0,
+    source = 'fileLocation',
     vol = 1,
     atk = 1,
     rls = 1,
     mult = true,
     inter = 'linear',
     sus = 0,
-    tmp = 0,
-    trgt = 0,
-    susMult = true,
-    susFd = true,
     tHolds = {{0, 0}} -- TODO: tHolds should be formatted like this by Musico
 }
 
@@ -117,28 +111,42 @@ local function getInterFunc(funcName)
     return func
 end
 
-local function newTrack(trackTable, loopTime) --TODO:Ensure tHolds are formatted correctly
-    setmetatable(trackTable, {__index = track})
+local function setSourceFile(trackTbl, fileLocation)
+    trackTbl.source = newSource(fileLocation, 'static')
+end
+
+local function newTrack(trackTable) --TODO:Ensure tHolds are formatted correctly
+    local trk = {}
     for k, v in pairs(track) do
-        if not trackTable[k] or type(trackTable[k]) ~= type(v) then
-            trackTable[k] = v
+        local lV = trackTable[k]
+        if not lV or type(lV) ~= type(v) then
+            trk[k] = v
+        else
+            trk[k] = lV
         end
     end
-    local tHolds = trackTable.tHolds
-    if #tHolds == 1 then
-        trackTable.check = singleHold
-    else
-        trackTable.check = multiHold
+    if not trackTable.inter then -- special case var
+        trk.inter = false
     end
-    trackTable.inter = getInterFunc(trackTable.inter)
-    trackTable.loopTime = loopTime
-    trackTable.init = 0
-    trackTable.time = 0
-    trackTable.dur = 0
-    trackTable.sus = trackTable.sus == 0 and 1 or trackTable.sus
-    trackTable.atk = trackTable.atk == 0 and trackTable.sus or trackTable.atk
-    trackTable.rls = trackTable.rls == 0 and trackTable.sus or trackTable.rls
-    return trackTable
+    setmetatable(trk, {__index = track})
+
+    if not pcall(setSourceFile, trk, trk.source) then
+        print('Failed to load song at:', trk.source)
+        return
+    end
+
+    if #trk.tHolds == 1 then --TODO:Ensure tHold is switched to tHolds
+        trk.check = singleHold
+    else
+        trk.check = multiHold
+    end
+
+    trk.inter = getInterFunc(trackTable.inter)
+    trk.trgt, trk.init = 0, 0
+    trk.sus = trk.sus == 0 and 1 or trk.sus
+    trk.atk = trk.atk == 0 and trk.sus or trk.atk
+    trk.rls = trk.rls == 0 and trk.sus or trk.rls
+    return trk
 end
 
 return {

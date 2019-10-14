@@ -4,11 +4,10 @@
     into tracks in order to create horizontal dynamic
     music
 ]]
-local filesystem, read, floor = love.filesystem, love.filesystem.read, math.floor
-local newSoundData = love.sound.newSoundData --IMPROVE: if memory becomes issue, implement decoder
-local newSource = love.audio.newSource
+-- local newSoundData = love.sound.newSoundData --IMPROVE: if memory becomes issue, implement decoder
 
 local songL = require('Song')
+local reader = require('MusicoReader')
 local pauseS, unPauseS, stopS, startS = songL.pause, songL.unPause, songL.stop, songL.start
 local newSong, updateSong, getLoopTime = songL.new, songL.update, songL.getLoopTime
 local songs = {}
@@ -18,60 +17,15 @@ local activeSong
 local loop = 0
 local intensity = 0
 
-local function findHeader(str)
-    -- string.format(str, ...)
-end
-
-local function loadSongFile(songPath) --TODO: make .musico reader
-    -- local songFile = read(songPath)
-    -- for line in  do
-    --     table.insert(highscores, line)
-    -- end
-    return {
-        song = {},
-        tracks = {}
-    }
-end
-
-local function loadFiles(songDir)
-    for _, song in ipairs(filesystem.getDirectoryItems(songDir)) do
-        local pathTo = songDir .. '/' .. song
-        if filesystem.getInfo(pathTo, 'file') then
-            local state, output = pcall(loadSongFile, pathTo)
-            if state then
-                local sng = newSong(output)
-                songs[song:getName()] = sng
-            else
-                print('MUSICO ERROR: Loading ' .. pathTo)
-            end
+local function loadMusic(musicPath)
+    local sngs = reader(musicPath)
+    for name, song in ipairs(sngs) do
+        local o = newSong(song[1])
+        for i = 2, #song do
+            o:addTrack(song[i])
         end
+        sngs[name] = o
     end
-end
-
-local function load(musicFolder)
-    -- for _, songFolder in ipairs(filesystem.getDirectoryItems(musicFolder)) do
-    --     loadFiles(musicFolder .. '/' ..songFolder)
-    -- end
-    local o =
-        newSong {
-        name = 'rink',
-        bpm = 235,
-        bpl = 1 --4
-    }
-    o:addTrack {
-        source = newSource('Music/rink/rink.wav', 'static'),
-        id = 1,
-        vol = 1,
-        atk = 0.2,
-        rls = 0.2,
-        mult = true,
-        inter = 'quadratic',
-        sus = 0,
-        susMult = true,
-        susFd = true,
-        tHolds = {{-55, 100}}
-    }
-    songs['rink'] = o
 end
 
 local function loadSong(songName)
@@ -117,13 +71,13 @@ end
 local function update(dt)
     if playing then
         local cut = loop >= loopTime
+        updateSong(activeSong, loop, intensity, cut)
         loop = cut and 0 or loop + dt
-        updateSong(activeSong, dt, intensity, cut)
     end
 end
 
 local functions = {
-    load = load,
+    loadMusic = loadMusic,
     update = update,
     loadSong = loadSong,
     start = start,
