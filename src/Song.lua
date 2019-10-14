@@ -67,10 +67,10 @@ local function start(self)
     self.playing = true
 end
 
-local function update(self, intensity, cut)
+local function update(self, dt, intensity, cut)
     local trks = self.tracks
     for i = 1, #trks do
-        updateTrack(trks[i], intensity, cut)
+        updateTrack(trks[i], dt, intensity, cut)
     end
 end
 
@@ -92,7 +92,7 @@ local song = {
 
 local function newSong(songTable)
     setmetatable(songTable, {__index = song})
-    song.loopTime = getBPL(getBPL) * 4 / (getBPM(song) / 60) --FIXME: bpm and stuff
+    song.loopTime = getBPL(songTable) * 4 / (getBPM(song) / 60) --FIXME: bpm and stuff
     return songTable
 end
 

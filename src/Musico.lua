@@ -56,7 +56,7 @@ local function load(musicFolder)
         newSong {
         name = 'rink',
         bpm = 235,
-        bpl = 4
+        bpl = 1 --4
     }
     o:addTrack {
         source = newSource('Music/rink/rink.wav', 'static'),
@@ -65,7 +65,7 @@ local function load(musicFolder)
         atk = 0.2,
         rls = 0.2,
         mult = true,
-        inter = true,
+        inter = 'quadratic',
         sus = 0,
         susMult = true,
         susFd = true,
@@ -118,8 +118,7 @@ local function update(dt)
     if playing then
         local cut = loop >= loopTime
         loop = cut and 0 or loop + dt
-        -- print(loop)
-        updateSong(activeSong, intensity, cut)
+        updateSong(activeSong, dt, intensity, cut)
     end
 end
 
