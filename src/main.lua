@@ -27,7 +27,7 @@ end
 
 function love.load()
     Musico.loadMusic('Music')
-    Musico.loadSong('ShantyNo.1')
+    Musico.loadSong('rink')
     w = love.graphics.getDimensions() / 2
 end
 

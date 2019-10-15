@@ -5,11 +5,11 @@ local currentHead = false
 local keyWordFound = false
 local keyWordSetter = false
 local storedKey = ''
-local savedKey = ''
+local savedKey = '' --TODO: multiLine var support
 
 local keyWords = {
     file = 'string',
-    id = 'number',
+    id = 'number', --TODO: getRid of id option
     vol = 'number',
     volume = 'number',
     atk = 'number',

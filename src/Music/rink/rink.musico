@@ -1,0 +1,93 @@
+[Track]
+    file = 'lead_hard.wav'
+    id = 1
+    vol = 1
+    atk = 1
+    rls = 1
+    sus = 0
+    inter = 'circular'
+    tHold = {70, 100}
+
+[Track]
+    file = 'lead_high.wav'
+    id = 2
+    vol = 1
+    atk = 1
+    rls = 1
+    sus = 0
+    inter = 'circular'
+    tHold = {20, 100}
+
+[Track]
+    file = 'lead_mid.wav'
+    id = 3
+    vol = 1
+    atk = 1
+    rls = 1
+    sus = 0
+    inter = 'exponential'
+    tHold = {-50, 20}
+
+[Track]
+    file = 'lead_low.wav'
+    id = 4
+    vol = 1
+    atk = 1
+    rls = 1
+    sus = 0
+    inter = 'exponential'
+    tHold = {-80, 20}
+
+[Track]
+    file = 'beat_hard.wav'
+    id = 5
+    vol = 1
+    atk = 1
+    rls = 1
+    sus = 0
+    inter = 'circular'
+    tHold = {{-80, 10},{60, 100}}
+
+[Track]
+    file = 'beat_main.wav'
+    id = 6
+    vol = 1
+    atk = 1
+    rls = 1
+    sus = 0
+    inter = 'circular'
+    tHold = {{-90,-20},{10, 100}}
+
+[Track]
+    file = 'pad_low.wav'
+    id = 7
+    vol = 1
+    atk = 1
+    rls = 1
+    sus = 0
+    inter = 'quadratic'
+    tHold = {{-90,-10},{0, 100}}
+
+[Track]
+    file = 'trance_high.wav'
+    id = 8
+    vol = 1
+    atk = 1
+    rls = 1
+    sus = 0
+    inter = 'circular'
+    tHold = {40, 90}
+
+[Track]
+    file = 'trance_low.wav'
+    id = 9
+    vol = 1
+    atk = 1
+    rls = 1
+    sus = 0
+    inter = 'circular'
+    tHold = {{-100, -50},{-10, 100}}
+
+[Song]
+    bpm = 235
+    bpl = 1
