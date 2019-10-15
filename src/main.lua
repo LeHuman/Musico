@@ -26,8 +26,8 @@ function love.mousemoved(x)
 end
 
 function love.load()
-    Musico.load()
-    Musico.loadSong('rink')
+    Musico.loadMusic('Music')
+    Musico.loadSong('ShantyNo.1')
     w = love.graphics.getDimensions() / 2
 end
 

@@ -39,7 +39,7 @@ local function getTHolds(self)
 end
 
 local function press(self)
-    self.trgt = min(self.trgt + self.atk, self.sus)
+    self.trgt = min(self.trgt + self.atk, self.sus) --FIXME: sustain var not used properly
 end
 
 local function release(self)
@@ -58,7 +58,7 @@ local function multiHold(self, intensity)
 end
 
 local function singleHold(self, intensity)
-    local tHold = self.tHolds[1]
+    local tHold = self.tHolds
     if tHold[1] <= intensity and intensity <= tHold[2] then
         return true
     end
@@ -70,6 +70,7 @@ local function interpolate(time, initial, target, duration, func)
 end
 
 local function update(self, loop, loopTime, intensity, cut)
+    print(loop, loopTime)
     if cut then
         if self:check(intensity) then --IMPROVE: better threshold checking
             press(self)
@@ -99,7 +100,7 @@ local track = {
     mult = true,
     inter = 'linear',
     sus = 0,
-    tHolds = {{0, 0}} -- TODO: tHolds should be formatted like this by Musico
+    tHolds = {-100, 100}
 }
 
 local function getInterFunc(funcName)
@@ -135,13 +136,15 @@ local function newTrack(trackTable) --TODO:Ensure tHolds are formatted correctly
         return
     end
 
-    if #trk.tHolds == 1 then --TODO:Ensure tHold is switched to tHolds
+    if type(trk.tHolds[1]) ~= 'table' then
         trk.check = singleHold
     else
         trk.check = multiHold
     end
 
-    trk.inter = getInterFunc(trackTable.inter)
+    if trk.inter then
+        trk.inter = getInterFunc(trk.inter)
+    end
     trk.trgt, trk.init = 0, 0
     trk.sus = trk.sus == 0 and 1 or trk.sus
     trk.atk = trk.atk == 0 and trk.sus or trk.atk

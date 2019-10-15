@@ -4,83 +4,64 @@
 # letter case is ignored
 
 # Interpolation Functions*
-#   exponential
-#   circular
-#   linear
-#   quadratic
+#   'exponential'
+#   'circular'
+#   'linear'
+#   'quadratic'
 # more can be added in the Interpolation.lua
 
 # New track (NOTE = duplicate attributes will get overwritten)
 [Track]
     # 'file' = relative directory of track file | Eg = 'Accordian.wav'
     # file = {Accordian.wav, chain.wav, ...} | alternatively, chaining file names stiches files together
-    file = Accordian.wav
+    file = 'Accordian.wav'
     # 'id' = number of track | (1, 16) (NOTE = tracks with same id will be overwritten)
     id = 1
     # 'volume' or 'vol' = max volume for song | (0.0, 1.0)
     vol = 1
     # 'attack' or 'atk' = how much is added to sus val each active loop | (1, n) (NOTE = 0 will immediatly turn on full sus)
-    atk = 1
+    atk = 4
     # 'release' or 'rls' = how much is removed from sus val each inactive loop | (1, n) (NOTE = 0 will immediatly turn off all sus)
-    rls = 1
+    rls = 2
     # 'multiplier' or 'mult' = multiply current attack/release to volume | (true\false)
     mult = true
     # 'interpolation' or 'inter' = interpolation of the attack/release Multiplier | ('false' or an interpolation function*)
-    inter = quadratic
+    inter = 'quadratic'
     # 'sustain' or 'sus' = how many unactive loops it takes to completely decay | (1, n)
-    sus = 1
-    # 'threshold' or 'tHold' = the range(s) in which the track should play | ({{lower,upper},{-100,100},...})
-    tHold = {
-        {20,100}
-        {-50,-30}
-    }
-
-[Track]
-    file = Accordian.wav
-    id = 0
-    vol = 1
-    atk = 1
-    rls = 1
-    mult = true
-    inter = 'linear'
     sus = 0
-    susMult = true
-    susFd = true
-    tHold = {
-        {0, 0}
-    }
+    # 'threshold' or 'tHold' = the range(s) in which the track should play | ({{lower,upper},{-100,100},...})
+    tHold = {20,100}
 
 [Track]
-    file = HangDrum.wav
+    file = 'HangDrum.wav'
     id = 2
     vol = 1
     atk = 1
     rls = 1
-    inter = 'linear'
+    inter = 'quadratic'
     mult = true
-    inter = true
-    sus = 0
-    susMult = true
-    susFd = true
+    sus = 2
     tHold = {-85,100}
 
 [Track]
-    file = PanPipe.wav
+    file = 'PanPipe.wav'
     id = 3
     vol = 1
-    atk = 0
-    atkMult = true
+    atk = 1
+    rls = 1
+    inter = 'quadratic'
+    mult = true
     sus = 0
-    susMult = true
 
 [Track]
-    file = Piano.wav
+    file = 'Piano.wav'
     id = 4
     vol = 1
-    atk = 0
-    atkMult = true
-    sus = 0
-    susMult = true
+    atk = 1
+    rls = 1
+    inter = 'quadratic' #yeyey
+    mult = true
+    sus = 2
     tHold = {-45,90}
 
 #Actual info about the song
@@ -88,4 +69,4 @@
     # beats per minute (default = 60)
     bpm = 174
     # beats per loop (default = 4)
-    bpl = 12
+    bpl = 1 #12

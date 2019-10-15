@@ -43,11 +43,15 @@ local function addTrack(self, trackTable)
         }
     end
     trackTable = track.new(trackTable)
-    local id = trackTable.id
-    if id < 16 and id > 0 then
-        self.tracks[id] = trackTable
+    if trackTable then
+        local id = trackTable.id
+        if id < 16 and id > 0 then
+            self.tracks[id] = trackTable
+        else
+            print('Track id is out of range:', id)
+        end
     else
-        print('Track id is out of range:', id)
+        print('Failed to create track!')
     end
 end
 
@@ -78,6 +82,9 @@ end
 local function start(self)
     local trks = self.tracks
     for i = 1, #trks do
+        if trks[i] == false then
+            break
+        end
         startT(trks[i])
     end
     self.playing = true
@@ -87,6 +94,9 @@ local function update(self, loop, intensity, cut)
     local trks = self.tracks
     local loopTime = self.loopTime
     for i = 1, #trks do
+        if trks[i] == false then
+            break
+        end
         updateTrack(trks[i], loop, loopTime, intensity, cut)
     end
 end

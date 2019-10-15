@@ -19,16 +19,18 @@ local intensity = 0
 
 local function loadMusic(musicPath)
     local sngs = reader(musicPath)
-    for name, song in ipairs(sngs) do
+    for name, song in pairs(sngs) do
         local o = newSong(song[1])
         for i = 2, #song do
             o:addTrack(song[i])
         end
-        sngs[name] = o
+        songs[name] = o
+        print('saved song: ' .. name)
     end
 end
 
 local function loadSong(songName)
+    songName = tostring(songName):lower()
     local song = songs[songName]
     if song then
         if activeSong then
@@ -37,27 +39,41 @@ local function loadSong(songName)
         activeSong = song
         loopTime = getLoopTime(song)
         print('song loaded!')
+    else
+        print("Song '" .. songName .. "' not found!")
     end
 end
 
 local function pause()
-    pauseS(activeSong)
-    playing = false
+    if activeSong then
+        pauseS(activeSong)
+        playing = false
+    end
 end
 
 local function unpause()
-    unPauseS(activeSong)
-    playing = true
+    if activeSong then
+        unPauseS(activeSong)
+        playing = true
+    else
+        print('No valid song loaded!')
+    end
 end
 
 local function stop()
-    stopS(activeSong)
-    playing = false
+    if activeSong then
+        stopS(activeSong)
+        playing = false
+    end
 end
 
 local function start()
-    startS(activeSong)
-    playing = true
+    if activeSong then
+        startS(activeSong)
+        playing = true
+    else
+        print('No valid song loaded!')
+    end
 end
 
 local function setIntensity(magnitute)
