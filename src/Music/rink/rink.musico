@@ -45,7 +45,7 @@
     atk = 1
     rls = 1
     sus = 0
-    inter = 'circular'
+    inter = 'none'
     tHold = {{-80, 10},{60, 100}}
 
 [Track]
@@ -56,7 +56,7 @@
     rls = 1
     sus = 0
     inter = 'circular'
-    tHold = {{-90,-20},{10, 100}}
+    tHold = {{-100,-20},{10, 100}}
 
 [Track]
     file = 'pad_low.wav'
@@ -86,8 +86,9 @@
     rls = 1
     sus = 0
     inter = 'circular'
-    tHold = {{-100, -50},{-10, 100}}
+    tHold = {{-60, -30},{40, 100}}
 
 [Song]
+    name = 'Rink'
     bpm = 235
     bpl = 1

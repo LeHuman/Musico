@@ -70,7 +70,7 @@ local function interpolate(time, initial, target, duration, func)
 end
 
 local function update(self, loop, loopTime, intensity, cut)
-    print(loop, loopTime)
+    -- print(loop, loopTime)
     if cut then
         if self:check(intensity) then --IMPROVE: better threshold checking
             press(self)
@@ -157,6 +157,7 @@ return {
     start = startTrack,
     stop = stopTrack,
     pause = pauseTrack,
+    getVolume = getVolume,
     unPause = unpauseTrack,
     getID = getID,
     getTHolds = getTHolds,

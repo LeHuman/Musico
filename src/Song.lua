@@ -86,6 +86,7 @@ local song = {
     playing = false,
     addTrack = addTrack,
     getTracks = getTracks,
+    getLoopTime = getLoopTime,
     getBPM = getBPM,
     getBPL = getBPL,
     getName = getName,

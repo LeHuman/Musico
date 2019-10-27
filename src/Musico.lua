@@ -8,6 +8,7 @@
 
 local songL = require('Song')
 local reader = require('MusicoReader')
+local min = math.min
 local pauseS, unPauseS, stopS, startS = songL.pause, songL.unPause, songL.stop, songL.start
 local newSong, updateSong, getLoopTime = songL.new, songL.update, songL.getLoopTime
 local songs = {}
@@ -54,7 +55,7 @@ end
 local function loadMusic(musicPath)
     local sngs = reader(musicPath)
     for name, song in pairs(sngs) do
-        print(_tabletostring(song))
+        -- print(_tabletostring(song))
         local o = newSong(song[1])
         for i = 2, #song do
             o:addTrack(song[i])
@@ -112,7 +113,7 @@ local function start()
 end
 
 local function setIntensity(magnitute)
-    intensity = magnitute
+    intensity = min(magnitute, 100)
 end
 
 local function getIntensity()
@@ -127,6 +128,25 @@ local function update(dt)
     end
 end
 
+local function getInfo()
+    local song = activeSong
+    local info = {
+        Name = song:getName(),
+        BPM = song:getBPM(),
+        BPL = song:getBPL(),
+        LoopTime = song:getLoopTime(),
+        tracks = {}
+    }
+    for i, track in ipairs(song:getTracks()) do
+        info.tracks[i] = track
+    end
+    return info
+end
+
+local function isPlaying()
+    return playing
+end
+
 local functions = {
     loadMusic = loadMusic,
     update = update,
@@ -135,6 +155,8 @@ local functions = {
     stop = stop,
     pause = pause,
     unpause = unpause,
+    getInfo = getInfo,
+    isPlaying = isPlaying,
     setIntensity = setIntensity,
     getIntensity = getIntensity
 }

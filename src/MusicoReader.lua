@@ -24,9 +24,11 @@ local keyWords = {
     sustain = 'number',
     thold = 'table',
     threshold = 'table',
+    name = 'string',
     bpm = 'number',
     bpl = 'number'
 }
+
 local function eval(string)
     local func = {
         'return',
